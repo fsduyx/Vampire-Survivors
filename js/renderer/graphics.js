@@ -82,4 +82,3 @@ window.drawCandle = function(ctx, x, y) {
 
     ctx.restore();
 };
-

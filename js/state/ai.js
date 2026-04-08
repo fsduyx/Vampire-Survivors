@@ -70,6 +70,11 @@ var GameAI = (function() {
         GameState.setAmmoCount(GameState.ammoCount() - 1);
         GameState.setLastShotTime(Date.now());
         GameUI.updateAmmo();
+
+        // ========== ДОБАВЛЕНО: звук выстрела ==========
+        if (typeof GameSound !== 'undefined' && GameSound.play) {
+            GameSound.play('shoot');
+        }
     }
     
     function moveBullets() {
@@ -196,10 +201,23 @@ var GameAI = (function() {
                 if (checkCollision(b, e)) {
                     e.health -= GameConfig.GAME_PARAMS.BULLET_DAMAGE;
                     
+                    if (typeof GameSound !== 'undefined' && GameSound.play) {
+                        GameSound.play('hit');
+                    }
+                    
                     if (e.health <= 0) {
                         GameState.removeEnemy(i);
                         GameWaves.onEnemyDefeated();
                         GameUI.updateKills();
+                        
+                        if (typeof GameSound !== 'undefined' && GameSound.play) {
+                            GameSound.play('enemyDeath');
+                        }
+                        // Спавн сферы опыта при смерти врага
+                        var expValue = 10 + Math.floor(GameState.waveNumber() * 2);
+                        if (typeof GameParticles !== 'undefined' && GameParticles.createExpOrb) {
+                            GameParticles.createExpOrb(e.posX, e.posY, expValue);
+                                }
                     }
                     // Удаляем пулю только из состояния
                     GameState.removeBullet(j);

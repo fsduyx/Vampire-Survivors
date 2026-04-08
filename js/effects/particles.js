@@ -118,4 +118,101 @@ var GameParticles = (function() {
         clear: clear,
         getParticles: function() { return particles; }
     };
+    // ===== ДОБАВИТЬ В GameParticles =====
+    var expOrbs = [];
+
+    function createExpOrb(x, y, value) {
+        expOrbs.push({
+        x: x,
+        y: y,
+        value: value,
+        radius: 8,
+        life: 10000, // 10 секунд
+        attracted: false
+    });
+}
+
+    function updateExpOrbs() {
+        var player = GameState.player();
+        var pickupRange = 100 + (GameConfig.getPickupRangeBonus ? GameConfig.getPickupRangeBonus() : 0);
+    
+    for (var i = expOrbs.length - 1; i >= 0; i--) {
+        var orb = expOrbs[i];
+        
+        // Уменьшаем время жизни
+        orb.life -= 16; // примерно 60fps
+        
+        if (orb.life <= 0) {
+            expOrbs.splice(i, 1);
+            continue;
+        }
+        
+        // Проверка расстояния до игрока
+        var dx = player.x - orb.x;
+        var dy = player.y - orb.y;
+        var dist = Math.hypot(dx, dy);
+        
+        // Притяжение к игроку
+        if (dist < pickupRange || orb.attracted) {
+            orb.attracted = true;
+            if (dist > 5) {
+                var speed = 5;
+                orb.x += (dx / dist) * speed;
+                orb.y += (dy / dist) * speed;
+            } else {
+                // Сбор сферы
+                var levelUp = GameState.addExp(orb.value);
+                if (typeof Sound !== 'undefined' && Sound.playExpCollect) {
+                    Sound.playExpCollect();
+                }
+                
+                // Обновляем UI
+                if (typeof GameUI !== 'undefined') {
+                    GameUI.updateLevelDisplay();
+                }
+                
+                // Проверяем повышение уровня
+                if (levelUp) {
+                    if (typeof GameCore !== 'undefined' && GameCore.onLevelUp) {
+                        GameCore.onLevelUp();
+                    }
+                }
+                
+                expOrbs.splice(i, 1);
+            }
+        }
+    }
+}
+
+function renderExpOrbs(ctx) {
+    for (var i = 0; i < expOrbs.length; i++) {
+        var orb = expOrbs[i];
+        
+        // Градиент для сферы опыта
+        var gradient = ctx.createRadialGradient(orb.x, orb.y, 0, orb.x, orb.y, orb.radius);
+        gradient.addColorStop(0, '#ffdd88');
+        gradient.addColorStop(1, '#ffaa22');
+        
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(orb.x, orb.y, orb.radius, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Внутренний блик
+        ctx.fillStyle = 'rgba(255, 255, 200, 0.6)';
+        ctx.beginPath();
+        ctx.arc(orb.x - 2, orb.y - 2, 3, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+// Экспортируем новые функции
+return {
+    // ... существующие методы ...
+    createExpOrb: createExpOrb,
+    updateExpOrbs: updateExpOrbs,
+    renderExpOrbs: renderExpOrbs,
+    getExpOrbs: function() { return expOrbs; },
+    clearExpOrbs: function() { expOrbs = []; }
+};
 })();

@@ -1,60 +1,22 @@
 // ===========================
-// SPRITE LOADER - Загрузчик спрайтов (РАБОЧАЯ ВЕРСИЯ)
+// SPRITE LOADER - Упрощённая версия (без реальных изображений)
 // ===========================
 
 const SpriteLoader = {
     images: {},
     loaded: false,
-    total: 0,
-    count: 0,
     callbacks: [],
     
     load() {
-        const assets = window.ASSETS.images;
-        if (!assets) {
-            console.error('[SpriteLoader] ASSETS не найден');
-            return;
-        }
-        
-        this.total = 2 + Object.keys(assets.enemies).length;
-        this.count = 0;
-        
-        this._load('player', assets.player);
-        this._load('playerGun', assets.playerGun);
-        
-        for (let type in assets.enemies) {
-            this._load('enemy_' + type, assets.enemies[type]);
-        }
-        
-        console.log('[SpriteLoader] Загрузка ' + this.total + ' спрайтов...');
-    },
-    
-    _load(key, src) {
-        const img = new Image();
-        img.onload = () => {
-            this.images[key] = img;
-            this.count++;
-            this._checkComplete();
-        };
-        img.onerror = () => {
-            console.warn('[SpriteLoader] Не загружен: ' + src);
-            this.count++;
-            this._checkComplete();
-        };
-        img.src = src;
-    },
-    
-    _checkComplete() {
-        if (this.count >= this.total) {
-            this.loaded = true;
-            console.log('[SpriteLoader] Все спрайты загружены');
-            this.callbacks.forEach(cb => cb());
-            this.callbacks = [];
-        }
+        console.log('[SpriteLoader] Используется упрощённый режим (без текстур)');
+        // Просто помечаем как загруженные, не загружая реальные файлы
+        this.loaded = true;
+        this.callbacks.forEach(cb => cb());
+        this.callbacks = [];
     },
     
     get(key) {
-        return this.images[key] || null;
+        return null; // Возвращаем null, игра будет рисовать примитивами
     },
     
     onReady(callback) {

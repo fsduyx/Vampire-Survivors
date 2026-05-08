@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -31,8 +30,8 @@
     </div>
   </div>
 
-
-<div class="how-scroll-container"> <div id="howToPlay" class="screen">
+  <!-- HOW TO PLAY -->
+  <div id="howToPlay" class="screen">
     <div class="menu-bg"></div>
     <div class="how-content">
       <h2 class="how-title">КАК ИГРАТЬ</h2>
@@ -65,14 +64,6 @@
       <button class="btn-menu" id="btnBackMenu">← НАЗАД</button>
     </div>
   </div>
- </div>
-//дополнительно можно кастомизировать полосу прокрутки
-.how-scroll-container::-webkit-scrollbar {
-  width: 4px;         
-}
-
-  
- 
 
   <!-- GAME SCREEN -->
   <div id="gameScreen" class="screen">
@@ -141,41 +132,35 @@
     </div>
   </div>
 
-      <!-- ===== SETTINGS (Конфигурации) ===== -->
-    <script src="js/settings/utils.js"></script>
-    <script src="js/settings/assets-config.js"></script>
-    <script src="js/settings/game-config.js"></script>
-    <script src="js/settings/weapons-config.js"></script>
-    <script src="js/settings/passives-config.js"></script>
-    <script src="js/settings/config.js"></script>
-    
-    <!-- ===== GRAPHICS (Визуальная часть) ===== -->
-    <script src="js/graphics/sprite-loader.js"></script>
-    <script src="js/graphics/canvas.js"></script>
-    <script src="js/graphics/particles.js"></script>
-    <script src="js/graphics/ui.js"></script>
-    
-    <!-- ===== GAME CORE (Базовые классы) ===== -->
-    <script src="js/game/player.js"></script>
-    <script src="js/game/enemies.js"></script>
-    <script src="js/game/weapons.js"></script>
-    <script src="js/game/world.js"></script>
-    <script src="js/game/game.js"></script>
-    
-    
-   
-      <!-- BOOT -->
-    <script>
-      window.addEventListener('DOMContentLoaded', () => {
-        window.SpriteLoader.onReady = () => {
-          window.game = new Game();
-        };
+  <!-- ===== SETTINGS (Конфигурации) ===== -->
+  <script src="js/settings/utils.js"></script>
+  <script src="js/settings/assets-config.js"></script>
+  <script src="js/settings/game-config.js"></script>
+  <script src="js/settings/weapons-config.js"></script>
+  <script src="js/settings/passives-config.js"></script>
+  <!-- <script src="js/settings/config.js"></script> -->  <!-- ЭТОТ ФАЙЛ ОТСУТСТВУЕТ, ЗАКОММЕНТИРОВАН -->
   
-        window.SpriteLoader.load();
-      });
-    </script>
+  <!-- ===== GRAPHICS (Визуальная часть) ===== -->
+  <script src="js/graphics/sprite-loader.js"></script>
+  <!-- <script src="js/graphics/canvas.js"></script> -->  <!-- ЭТОТ ФАЙЛ ВЫЗЫВАЕТ КОНФЛИКТ, ЗАКОММЕНТИРОВАН -->
+  <script src="js/graphics/particles.js"></script>
+  <script src="js/graphics/ui.js"></script>
+  
+  <!-- ===== GAME CORE (Базовые классы) ===== -->
+  <script src="js/game/player.js"></script>
+  <script src="js/game/enemies.js"></script>
+  <script src="js/game/weapons.js"></script>
+  <script src="js/game/world.js"></script>
+  <script src="js/game/game.js"></script>
+  
+  <!-- BOOT -->
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      window.SpriteLoader.onReady = () => {
+        window.game = new Game();
+      };
+      window.SpriteLoader.load();
+    });
+  </script>
 </body>
 </html>
-
-
-

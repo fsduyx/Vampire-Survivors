@@ -8,6 +8,14 @@ const SpriteLoader = {
     callbacks: [],
     
     load() {
+
+    // Проверяем, есть ли конфиг ассетов
+    if (typeof window.ASSETS === 'undefined') {
+        console.warn('[SpriteLoader] ASSETS не найден, создаём заглушку');
+        window.ASSETS = { images: { player: '', playerGun: '', enemies: {} } };
+    }
+
+
         console.log('[SpriteLoader] Используется упрощённый режим (без текстур)');
         // Просто помечаем как загруженные, не загружая реальные файлы
         this.loaded = true;

@@ -135,16 +135,7 @@ class Player {
     this.y = Utils.clamp(this.y, -CONFIG.WORLD_H / 2, CONFIG.WORLD_H / 2);
   }
 
-draw(ctx, camX, camY, W, H) {
-    const sprite = SpriteLoader.get('player');
-    const gunSprite = SpriteLoader.get('playerGun');
-    
-    // Если спрайт не загружен, рисуем примитивом
-    if (!sprite) {
-        this._drawFallback(ctx, camX, camY, W, H);
-        return;
-    }
-    
+  draw(ctx, camX, camY, W, H) {
     const sx = this.x - camX + W / 2;
     const sy = this.y - camY + H / 2;
     
@@ -163,28 +154,30 @@ draw(ctx, camX, camY, W, H) {
         return;
     }
     
-    // Аура
-    if (this.invincible) {
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = '#c0152a';
-    }
+    // Основной круг игрока
+    ctx.fillStyle = '#c0152a';
+    ctx.shadowBlur = 15;
+    ctx.beginPath();
+    ctx.arc(sx, sy, this.radius, 0, Math.PI * 2);
+    ctx.fill();
     
-    ctx.translate(sx, sy);
-    
-    if (this.facing === -1) ctx.scale(-1, 1);
-    
-    ctx.drawImage(sprite, -this.radius, -this.radius, this.radius * 2, this.radius * 2);
-    
-    if (gunSprite) {
-        ctx.rotate(this.lastDir);
-        ctx.drawImage(gunSprite, -5, -8, 12, 16);
-    }
+    // Глаза (направление)
+    ctx.fillStyle = '#ffffff';
+    const eyeOffset = this.facing === 1 ? 4 : -4;
+    ctx.beginPath();
+    ctx.arc(sx + eyeOffset, sy - 3, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#000000';
+    ctx.beginPath();
+    ctx.arc(sx + eyeOffset + (this.facing === 1 ? 1 : -1), sy - 3, 1.5, 0, Math.PI * 2);
+    ctx.fill();
     
     ctx.restore();
     
-    this._drawHealthBar(ctx, sx, sy - this.radius - 5, this.radius * 2, 4, this.hp, this.maxHp);
+    // Полоска здоровья
+    this._drawHealthBar(ctx, sx, sy - this.radius - 8, this.radius * 2, 5, this.hp, this.maxHp);
     
-    // Garlic аурa
+    // Аура Garlic
     const garlicWeapon = this.weapons.find(w => w.data.id === 'GARLIC');
     if (garlicWeapon) {
         ctx.save();
@@ -195,7 +188,7 @@ draw(ctx, camX, camY, W, H) {
         ctx.stroke();
         ctx.restore();
     }
-}
+  }
 
 _drawFallback(ctx, camX, camY, W, H) {
     const sx = this.x - camX + W / 2;

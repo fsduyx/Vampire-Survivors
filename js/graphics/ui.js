@@ -242,15 +242,20 @@ class UIManager {
   }
 
   // ---- Floating text ----
-  spawnFloatText(text, x, y, type = 'damage') {
+ spawnFloatText(text, x, y, type = 'damage') {
     const el = document.createElement('div');
     el.className = `float-text ${type}`;
     el.textContent = text;
     el.style.left = x + 'px';
     el.style.top  = y + 'px';
+    
+    // НОВО: случайный разброс в стороны
+    const offsetX = (Math.random() - 0.5) * 40;
+    el.style.setProperty('--offset-x', offsetX + 'px');
+    
     document.body.appendChild(el);
     setTimeout(() => el.remove(), 1000);
-  }
+}
 
   // ---- Screen flash ----
   _screenFlash(color = 'red') {

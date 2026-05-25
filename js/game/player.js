@@ -213,4 +213,8 @@ _drawHealthBar(ctx, x, y, w, h, current, max) {
     ctx.fillStyle = color;
     ctx.fillRect(x - w/2, y, w * pct, h);
 }
+getXpPercent() {
+    return Utils.clamp(this.xp / this.xpToNext, 0, 1);
 }
+}
+

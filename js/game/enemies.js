@@ -145,15 +145,11 @@ class EnemySystem {
   }
 
   applyHit(enemy, damage, knockbackDir = 0, knockback = 80) {
-    const armor = 0;
     const actualDmg = Math.max(1, damage - armor);
     enemy.hp -= actualDmg;
     enemy.hitFlash = 0.1;
-    // Knockback
-    enemy.vx = Math.cos(knockbackDir) * knockback;
-    enemy.vy = Math.sin(knockbackDir) * knockback;
-    enemy.stagger = 0.08;
-    return actualDmg;
+    enemy.hitColorTimer = 0.15; 
+}
   }
 
   applyBurn(enemy, burnDamage, burnDuration) {

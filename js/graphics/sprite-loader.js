@@ -87,6 +87,7 @@ const SpriteLoader = {
         if (this.loaded) callback();
         else this.callbacks.push(callback);
     }
+    
 };
 
 window.SpriteLoader = SpriteLoader;

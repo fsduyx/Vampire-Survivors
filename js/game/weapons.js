@@ -51,39 +51,39 @@ class WeaponInstance {
     this.timer = 0;
 
     // Computed stats
-    this.damage      = data.baseDamage;
-    this.cooldown    = data.baseCooldown;
-    this.range       = data.baseRange;
-    this.count       = data.projectileCount || 1;
-    this.speed       = data.speed || 300;
-    this.piercing    = data.piercing || 1;
-    this.arcAngle    = data.arcAngle || Math.PI * 0.5;
-    this.chainCount  = data.chainCount || 0;
-    this.chainRange  = data.chainRange || 120;
-    this.poolRadius  = data.poolRadius || 50;
-    this.poolDur     = data.poolDuration || 3.0;
-    this.tickRate    = data.tickRate || 0.5;
-    this.burnDamage  = data.burnDamage || 0;
-    this.burnDuration= data.burnDuration || 0;
+    this.damage = data.baseDamage;
+    this.cooldown = data.baseCooldown;
+    this.range = data.baseRange;
+    this.count = data.projectileCount || 1;
+    this.speed = data.speed || 300;
+    this.piercing = data.piercing || 1;
+    this.arcAngle = data.arcAngle || Math.PI * 0.5;
+    this.chainCount = data.chainCount || 0;
+    this.chainRange = data.chainRange || 120;
+    this.poolRadius = data.poolRadius || 50;
+    this.poolDur = data.poolDuration || 3.0;
+    this.tickRate = data.tickRate || 0.5;
+    this.burnDamage = data.burnDamage || 0;
+    this.burnDuration = data.burnDuration || 0;
   }
 
   upgrade() {
     if (this.level >= this.data.maxLevel) return;
     const upg = this.data.upgrades[this.level - 1];
     if (!upg) return;
-    if (upg.dmg)     this.damage   *= upg.dmg;
-    if (upg.cd)      this.cooldown *= upg.cd;
-    if (upg.range)   this.range    *= upg.range;
-    if (upg.count)   this.count    += upg.count;
-    if (upg.piercing)this.piercing += upg.piercing;
-    if (upg.arc)     this.arcAngle *= upg.arc;
-    if (upg.chain)   this.chainCount += upg.chain;
-    if (upg.chainR)  this.chainRange *= upg.chainR;
-    if (upg.poolR)   this.poolRadius *= upg.poolR;
-    if (upg.poolDur) this.poolDur   *= upg.poolDur;
-    if (upg.burnDmg) this.burnDamage  *= upg.burnDmg;
+    if (upg.dmg) this.damage *= upg.dmg;
+    if (upg.cd) this.cooldown *= upg.cd;
+    if (upg.range) this.range *= upg.range;
+    if (upg.count) this.count += upg.count;
+    if (upg.piercing) this.piercing += upg.piercing;
+    if (upg.arc) this.arcAngle *= upg.arc;
+    if (upg.chain) this.chainCount += upg.chain;
+    if (upg.chainR) this.chainRange *= upg.chainR;
+    if (upg.poolR) this.poolRadius *= upg.poolR;
+    if (upg.poolDur) this.poolDur *= upg.poolDur;
+    if (upg.burnDmg) this.burnDamage *= upg.burnDmg;
     if (upg.burnDur) this.burnDuration *= upg.burnDur;
-    if (upg.speed)   this.speed    *= upg.speed;
+    if (upg.speed) this.speed *= upg.speed;
     this.level++;
   }
 
@@ -99,7 +99,7 @@ class WeaponInstance {
 class WeaponSystem {
   constructor() {
     this.projectiles = [];
-    this.aoeZones    = [];
+    this.aoeZones = [];
     this.maxProjectiles = 200;
   }
 
@@ -112,14 +112,14 @@ class WeaponSystem {
     weapon.timer = 0;
 
     switch (id) {
-      case 'SWORD_ARC':       this._fireSwordArc(weapon, player, enemies, particles, game); break;
-      case 'MAGIC_BOLT':      this._fireMagicBolt(weapon, player, enemies, particles, game); break;
-      case 'HOLY_WATER':      this._fireHolyWater(weapon, player, enemies, particles, game); break;
+      case 'SWORD_ARC': this._fireSwordArc(weapon, player, enemies, particles, game); break;
+      case 'MAGIC_BOLT': this._fireMagicBolt(weapon, player, enemies, particles, game); break;
+      case 'HOLY_WATER': this._fireHolyWater(weapon, player, enemies, particles, game); break;
       case 'CROSS_BOOMERANG': this._fireCross(weapon, player, enemies, particles, game); break;
-      case 'LIGHTNING':       this._fireLightning(weapon, player, enemies, particles, game); break;
-      case 'FIRE_WAND':       this._fireFireWand(weapon, player, enemies, particles, game); break;
-      case 'GARLIC':          this._fireGarlic(weapon, player, enemies, particles, game); break;
-      case 'SHADOW_BLADE':    this._fireShadowBlade(weapon, player, enemies, particles, game); break;
+      case 'LIGHTNING': this._fireLightning(weapon, player, enemies, particles, game); break;
+      case 'FIRE_WAND': this._fireFireWand(weapon, player, enemies, particles, game); break;
+      case 'GARLIC': this._fireGarlic(weapon, player, enemies, particles, game); break;
+      case 'SHADOW_BLADE': this._fireShadowBlade(weapon, player, enemies, particles, game); break;
     }
   }
 
@@ -345,6 +345,14 @@ class WeaponSystem {
           p.vx = Math.cos(a) * returnSpeed;
           p.vy = Math.sin(a) * returnSpeed;
           if (Utils.dist(p.x, p.y, owner.x, owner.y) < 20) { p.active = false; continue; }
+          if (Utils.circlesOverlap(p.x, p.y, p.radius, e.x, e.y, e.radius)) {
+            game.damageEnemy(e, p.damage, game.player, p);
+            particles.spawnHitSpark(e.x, e.y, p.glowColor, 4);
+            if (p.hitEnemies) p.hitEnemies.add(e.id);
+            if (!p.piercing || p.piercing <= 0 || p.hitEnemies.size >= p.piercing) {
+              p.active = false; break;
+            }
+          }
         }
       }
 

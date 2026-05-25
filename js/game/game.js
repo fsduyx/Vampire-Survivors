@@ -166,6 +166,20 @@ class Game {
   }
 
   _loop(timestamp) {
+      if (!this.running) return;
+      
+      // Ограничиваем максимальный dt (чтобы не было "телепортации" при лагах)
+      let rawDt = (timestamp - this._lastTime) / 1000;
+      this.dt = Math.min(rawDt, 0.033); // максимум 33 мс (30 FPS)
+      
+      if (rawDt > 0.1) {
+          console.warn(`[Game] Большая задержка: ${rawDt.toFixed(3)}с, пропускаем кадр`);
+          this._lastTime = timestamp;
+          this._rafId = requestAnimationFrame((t) => this._loop(t));
+          return;
+      }
+      
+      this._lastTime = timestamp;
     if (!this.running) return;
     this.dt = Math.min((timestamp - this._lastTime) / 1000, 0.05);
     this._lastTime = timestamp;
